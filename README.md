@@ -12,27 +12,42 @@ The code implements five different deep learning architectures:
 * **Fine-Tuned VGG**: VGG16 with its pre-trained layers frozen and a new classifier head added.
 * **Fine-Tuned ResNet**: ResNet50 with its pre-trained layers frozen and a new classifier head added.
 
-**Code Structure:**
+**Replication Instructions**
 
-* `train.py`: Defines the different model architectures using PyTorch. It also contains the training loop for each model with functions for data loading and loss calculation.
+To replicate the experiments and obtain the results, follow these steps:
 
+1. **Download Datasets:**
+   - Download the OpenSARShip and Fusar datasets from their respective sources. These datasets are crucial for training and testing the deep learning models.
 
-**Training Details:**
+2. **Install Dependencies:**
+   - Open a terminal or command prompt and navigate to your project directory.
+   - Install the required Python libraries using `pip`:
 
-* Loss function: Cross-entropy loss (lf)
-* Learning rate: lr = 0.001
-* Epochs: epochs = 10
+     ```bash
+     pip install -r requirements.txt
+     ```
 
-**Note:**
+     The `requirements.txt` file specifies all the necessary libraries for running the code.
 
-This is a basic example, and hyperparameters like learning rate and number of epochs might need further tuning based on your specific dataset and desired performance.
+3. **Prepare Datasets:**
+   - Run the `dataset_prep.py` script to process and prepare the downloaded datasets for use with the deep learning models. This script involve tasks like data cleaning, normalization, and splitting into training and testing sets, creation of merged dataset.
 
-**Getting Started:**
+     ```bash
+     python dataset_prep.py
+     ```
 
-1. Install required libraries (PyTorch, torchvision etc.)
-2. Download and prepare your SAR image dataset. Ensure proper handling of class imbalance. We have used Fusar and opensarship, then we created a new dataset after mixing them.
-3. Modify the `path variables` in the script to point to your data directory and adjust hyperparameters if needed.
-4. Run the script: `python train.py`
+4. **Train and Test Models:**
+   - Run the `test_models.py` script to train the deep learning models on the prepared datasets and evaluate their performance on the test sets. This script will perform the training, testing, and save the results.
+
+     ```bash
+     python test_models.py
+     ```
+
+5. **Analyze Results:**
+   - The script will generate two result files:
+     - `results.txt`: This file contains detailed logs of the training process, including loss values, accuracy metrics, and hyperparameter configurations.
+     - `results.csv`: This file summarizes the performance of each model on different test sets. It typically contains accuracy scores for each ship class and potentially other relevant metrics.
+
 
 **Further Exploration:**
 

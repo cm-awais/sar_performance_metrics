@@ -18,6 +18,8 @@ To replicate the experiments and obtain the results, follow these steps:
 
 1. **Download Datasets:**
    - Download the OpenSARShip and Fusar datasets from their respective sources. These datasets are crucial for training and testing the deep learning models.
+   - FUSAR: https://drive.google.com/file/d/1SOEMud9oUq69gxbfcBkOvtUkZ3LWEpZJ/view?usp=sharing
+   - OpenSARShip: https://emwlab.fudan.edu.cn/67/05/c20899a222981/page.htm
 
 2. **Install Dependencies:**
    - Open a terminal or command prompt and navigate to your project directory.

@@ -13,10 +13,10 @@ This repository contains the code for training deep learning models for classify
 The code implements five different deep learning architectures:
 
 * **CNN**: A custom convolutional neural network (CNN) architecture with batch normalization for improved training stability.
-* **VGG**: The VGG16 model, a pre-trained architecture fine-tuned for SAR ship classification.
-* **ResNet**: The ResNet50 model, another pre-trained architecture fine-tuned for the task.
-* **Fine-Tuned VGG**: VGG16 with its pre-trained layers frozen and a new classifier head added.
-* **Fine-Tuned ResNet**: ResNet50 with its pre-trained layers frozen and a new classifier head added.
+* **VGG**: The VGG16 model, a pre-trained architecture retrained for SAR ship classification.
+* **ResNet**: The ResNet50 model, another pre-trained architecture retrained for the task.
+* **Fine-Tuned VGG**: Fine tuned VGG16 with its pre-trained layers frozen and a new classifier head added. 
+* **Fine-Tuned ResNet**: Fine tuned ResNet50 with its pre-trained layers frozen and a new classifier head added.
 
 **Replication Instructions**
 
@@ -38,7 +38,7 @@ To replicate the experiments and obtain the results, follow these steps:
      The `requirements.txt` file specifies all the necessary libraries for running the code.
 
 3. **Prepare Datasets:**
-   - Run the `dataset_prep.py` script to process and prepare the downloaded datasets for use with the deep learning models. This script involve tasks like data cleaning, normalization, and splitting into training and testing sets, creation of merged dataset.
+   - Run the `dataset_prep.py` script to process and prepare the downloaded datasets for use with the deep learning models. This script involve tasks like splitting into training and testing sets, creation of merged dataset.
 
      ```bash
      python dataset_prep.py
@@ -54,7 +54,7 @@ To replicate the experiments and obtain the results, follow these steps:
 5. **Analyze Results:**
    - The script will generate two result files:
      - `results.txt`: This file contains detailed logs of the training process, including loss values, accuracy metrics, and hyperparameter configurations.
-     - `results.csv`: This file summarizes the performance of each model on different test sets. It typically contains accuracy scores for each ship class and potentially other relevant metrics.
+     - `scores.csv`: This file summarizes the performance of each model on test sets. It typically contains accuracy scores for each ship class and other relevant metrics like f1, precision, and recall.
 
 6. **Grad Cam:**
    - Run the `grad_cams.py` script to visualize the grad cams of the deep learning models on the test datasets. This script will perform the testing on 15 grad_cams images of each class in each datasets and save the resulted images in folder `Exp_images`.
@@ -69,7 +69,3 @@ To replicate the experiments and obtain the results, follow these steps:
 * Experiment with different hyperparameter settings.
 * Try data augmentation techniques to address class imbalance.
 * Implement additional evaluation metrics beyond basic accuracy.
-
-**Disclaimer:**
-
-This code is provided for educational purposes only. You might need to adapt it for your specific use case and dataset.

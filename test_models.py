@@ -431,16 +431,16 @@ fields = ["Accuracy", "Precision", "Recall", "F1", "C-Accuracy", "C-Precision",
           "C-Recall", "C-F1", "F-Accuracy", "F-Precision", "F-Recall", "F-F1",
           "T-Accuracy", "T-Precision", "T-Recall", "T-F1"]
 
-with open('tlp_results.csv', 'w') as f:
+# with open('tlp_results.csv', 'w') as f:
 
-    # using csv.writer method from CSV package
-    write = csv.writer(f)
+#     # using csv.writer method from CSV package
+#     write = csv.writer(f)
 
-    write.writerow(fields)
-    write.writerows(csv_res)
+#     write.writerow(fields)
+#     write.writerows(csv_res)
 
 
-with open('cpp_results.csv', 'w') as f:
+with open('scores.csv', 'w') as f:
 
     # using csv.writer method from CSV package
     write = csv.writer(f)

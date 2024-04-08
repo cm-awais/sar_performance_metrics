@@ -31,7 +31,7 @@ results = ""
 
 # Define data transformations
 transform_train = transforms.Compose([
-    transforms.RandomResizedCrop(224),
+    transforms.Resize((224, 224)),
     transforms.RandomHorizontalFlip(),
     transforms.ToTensor(),
     # transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5)),
@@ -64,12 +64,12 @@ def cal_scores(targets, predictions, check=False):
 
   class_metrics = {}
 
-  overall_accuracy = accuracy_score(true_labels, predicted_labels)
+  overall_accuracy = round(accuracy_score(true_labels, predicted_labels), 4)* 100
 
   # Calculate overall precision, recall, and F1-score (weighted average)
-  overall_precision = precision_score(true_labels, predicted_labels, average='weighted')
-  overall_recall = recall_score(true_labels, predicted_labels, average='weighted')
-  overall_f1 = f1_score(true_labels, predicted_labels, average='weighted')
+  overall_precision = round(precision_score(true_labels, predicted_labels, average='weighted'), 4)* 100
+  overall_recall = round(recall_score(true_labels, predicted_labels, average='weighted'), 4)* 100
+  overall_f1 = round(f1_score(true_labels, predicted_labels, average='weighted'), 4)* 100
   scores.extend([overall_accuracy, overall_precision, overall_recall, overall_f1])
 
   for j in range(3):
@@ -78,10 +78,10 @@ def cal_scores(targets, predictions, check=False):
     for items in class_info[j]:
       tr_lab.append(items[0])
       pr_lab.append(items[1])
-    class_accuracy = accuracy_score(tr_lab, pr_lab)
-    class_precision = precision_score(tr_lab, pr_lab, average='weighted')
-    class_recall = recall_score(tr_lab, pr_lab, average='weighted')
-    class_f1 = f1_score(tr_lab, pr_lab, average='weighted')
+    class_accuracy = round(accuracy_score(tr_lab, pr_lab), 4)* 100
+    class_precision = round(precision_score(tr_lab, pr_lab, average='weighted'), 4)* 100
+    class_recall = round(recall_score(tr_lab, pr_lab, average='weighted'), 4)* 100
+    class_f1 = round(f1_score(tr_lab, pr_lab, average='weighted'), 4)* 100
     scores.extend([class_accuracy, class_precision, class_recall, class_f1])
 
     class_metrics[j] = {
@@ -100,7 +100,7 @@ def cal_scores(targets, predictions, check=False):
   }, scores
 
 
-# Evaluation function
+# Evaluation function 
 def evaluate_model(model, data_loader):
     model.eval()
     model.to(device)
@@ -170,14 +170,14 @@ class VGGModel(nn.Module):
 class FineTunedVGG(nn.Module):
   def __init__(self, pretrained=True):
     super(FineTunedVGG, self).__init__()
-    self.features = models.vgg16(pretrained=pretrained)
+    self.features = models.vgg16(pretrained=pretrained).features
     for param in self.features.parameters():
       param.requires_grad = False  # Freeze pre-trained layers
 
-    # self.classifier = nn.Sequential(*list(self.features.classifier.children())[:-1])  # Use all but last layer
-    # self.classifier.add_module('final', nn.Linear(self.classifier[-1].in_features, 3))  # Add new final layer
+    self.avgpool = nn.AdaptiveAvgPool2d((7, 7))  # Global Average Pooling
+
     self.classifier = nn.Sequential(
-            nn.Linear(250 * 2 * 2, 4096),
+            nn.Linear(512 * 7 * 7, 4096),
             nn.ReLU(inplace=True),
             nn.Dropout(),
             nn.Linear(4096, 3)  # 3 output classes
@@ -185,17 +185,21 @@ class FineTunedVGG(nn.Module):
 
   def forward(self, x):
     x = self.features(x)
+    x = self.avgpool(x)
     x = torch.flatten(x, 1)
+    # print(x.shape)
     x = self.classifier(x)
     return x
-  
+
 class ResNetModel(nn.Module):
   def __init__(self, pretrained=False):
     super(ResNetModel, self).__init__()
-    self.features = models.resnet50(pretrained=pretrained)  # Use ResNet50 features
+    resnetf = models.resnet50(pretrained=pretrained)
+
+    self.features = nn.Sequential(*list(resnetf.children())[:-1]) # Use ResNet50 features
     self.avgpool = nn.AdaptiveAvgPool2d((10, 10))
     self.classifier = nn.Sequential(
-      nn.Linear(10 * 10, 4096), 
+      nn.Linear(10 * 10, 4096),  # Adjust based on input size
       nn.ReLU(inplace=True),
       nn.Dropout(),
       nn.Linear(4096, 3)
@@ -216,15 +220,18 @@ class FineTunedResNet(nn.Module):
     super(FineTunedResNet, self).__init__()
 
     # Load pre-trained ResNet50 model
-    self.features = models.resnet50(pretrained=pretrained)
+    resnetf = models.resnet50(pretrained=pretrained)
+
+    self.features = nn.Sequential(*list(resnetf.children())[:-1])
 
     # Freeze pre-trained layers
     for param in self.features.parameters():
       param.requires_grad = False
 
+    # Replace final layer and adjust for grayscale input
     self.avgpool = nn.AdaptiveAvgPool2d((10, 10))  # Global Average Pooling
     self.pool = nn.MaxPool2d(kernel_size=2, stride=2)
-    self.fc = nn.Linear(self.features.fc.in_features, 3)  
+    # self.fc = nn.Linear(self.features.fc.in_features, 3)  # Replace final layer
     self.classifier = nn.Sequential(
             nn.Linear(10 * 10, 4096),
             nn.ReLU(inplace=True),
@@ -248,7 +255,7 @@ class FineTunedResNet(nn.Module):
     # print(x.shape)
     x = self.classifier(x)
     return x
-  
+
 class ImprovedCNNModel(nn.Module):
   def __init__(self):
     super(ImprovedCNNModel, self).__init__()
@@ -267,9 +274,9 @@ class ImprovedCNNModel(nn.Module):
       nn.MaxPool2d(kernel_size=2, stride=2),
     )
     self.classifier = nn.Sequential(
-      nn.Linear(4096 * 7 * 7, 4096), 
+      nn.Linear(4096 * 7 * 7, 4096),  # Adjust for final feature map size
       nn.ReLU(inplace=True),
-      nn.Dropout(p=0.5), 
+      nn.Dropout(p=0.5),  # Adjust dropout probability
       nn.Linear(4096, 3)
     )
 
@@ -307,103 +314,137 @@ class CNNModel(nn.Module):
         x = self.classifier(x)
         return x
     
+lf = nn.CrossEntropyLoss()
+epochs = 10
+l_rate = 0.001
+batch_size = 64
 
-def main():
-  lf = nn.CrossEntropyLoss()
-  epochs = 10
-  l_rate = 0.001
-  batch_size = 64
+fusar_path = "fusar_split"
+open_sar_path = "opensarship_u1"
+mix_path = "mix_u"
 
-  fusar_path = "fusar_split"
-  open_sar_path = "opensar_split"
-  mix_path = "mix_split"
+csv_res = []
+csv1 = []
 
-  csv_res = []
+print("Loading Data")
 
-  print("Loading Data")
+fusar_train_loader = load_data(fusar_path + "/train", batch_size=batch_size)
+fusar_test_loader = load_data(fusar_path + "/test", batch_size=batch_size)
 
-  fusar_train_loader = load_data(fusar_path + "/train", batch_size=batch_size)
-  fusar_test_loader = load_data(fusar_path + "/test", batch_size=batch_size)
+open_sar_train_loader = load_data(open_sar_path + "/train", batch_size=batch_size)
+open_sar_test_loader = load_data(open_sar_path + "/test", batch_size=batch_size)
 
-  open_sar_train_loader = load_data(open_sar_path + "/train", batch_size=batch_size)
-  open_sar_test_loader = load_data(open_sar_path + "/test", batch_size=batch_size)
+mix_train_loader = load_data(mix_path + "/train", batch_size=batch_size)
+mix_test_loader = load_data(mix_path + "/test", batch_size=batch_size)
 
-  mix_train_loader = load_data(mix_path + "/train", batch_size=batch_size)
-  mix_test_loader = load_data(mix_path + "/test", batch_size=batch_size)
+print("Data Loaded")
 
-  print("Data Loaded")
+print("Made a Dictionary")
 
-  datasets = {"Fusar_ship": [fusar_train_loader,fusar_test_loader],
-              "OpenSARShip": [open_sar_train_loader, open_sar_test_loader],
-              "Mixed": [mix_train_loader, mix_test_loader]}
+models = {"CNN": ImprovedCNNModel(),
+          "VGG": VGGModel(),
+          "Fine_VGG": FineTunedVGG(),
+          "ResNet": ResNetModel(),
+          "Fine_Resnet": FineTunedResNet()}
 
-  print("Made a Dictionary")
+print("Loaded Models")
 
-  models = {"CNN": ImprovedCNNModel(),
-            "VGG": VGGModel(),
-            "Fine_VGG": FineTunedVGG(),
-            "ResNet": ResNetModel(),
-            "Fine_Resnet": FineTunedResNet()}
 
-  # models = {"ResNet": ResNetModel()}
+datasets = {"Fusar": [[fusar_train_loader],fusar_test_loader],
+            "OpenSARShip": [[open_sar_train_loader], open_sar_test_loader],
+            "Mixed_fusar": [[mix_train_loader], mix_test_loader]}
 
-  print("Loaded Models")
+def save_model(model, save_dir, model_filename):
+  """
+  Saves a PyTorch model to a specified directory, creating the directory if it doesn't exist.
 
-  # models = []
+  Args:
+      model: The PyTorch model to save.
+      save_dir: The directory path to save the model in.
+      model_filename: The filename to use for the saved model (e.g., "my_model.pt").
+  """
+  # Create the directory if it doesn't exist
+  os.makedirs(save_dir, exist_ok=True)  # exist_ok prevents errors if directory exists
 
-  for dataset_name, dataset_loader in datasets.items():
-      print("Training on ", dataset_name)
-      results += "Training on " + dataset_name + "\n"
-      # mix_path = "mix_5"
-      train_loader_m = dataset_loader[0]
-      test_loader_m = dataset_loader[1]
-      for model_name, model in models.items():
-          print("Training using :" , model_name)
-          results += "Training using "+model_name + "\n"
-          
-          n_model = model
-          optimizer = optim.Adam(n_model.parameters(), lr=l_rate)
-          n_model.to(device)
+  # Construct the full path to the model file
+  save_path = os.path.join(save_dir, model_filename)
 
-          # Training loop
-          for epoch in range(epochs):
-              n_model.train()
-              print(epoch)
-              for batch_idx, data in enumerate(train_loader_m):
-                  data, target = data[0].to(device), data[1].to(device)
+  # Save the model's state dictionary
+  torch.save(model.state_dict(), save_path)
 
-                  optimizer.zero_grad()
+# Example usage:
+# model = ...  # Your trained PyTorch model
+save_dir = "trained_models"
 
-                  output = n_model(data)
 
-                  loss = lf(output, target)
-                  loss.backward()
-                  optimizer.step()
+# test_sets = [fusar_test_loader, open_sar_test_loader, mix_test_loader]
 
-                  if batch_idx % 57 == 0:
-                      results+=f'Epoch {epoch + 1}/{epochs}, Batch {batch_idx}/{len(train_loader_m)}, Loss: {loss.item()}\n'
-                      print(f'Epoch {epoch + 1}/{epochs}, Batch {batch_idx}/{len(train_loader_m)}, Loss: {loss.item()}')
+for dataset_name, dataset_loader in datasets.items():
+    print("Training on ", dataset_name)
+    results += "Training on " + dataset_name + "\n"
+    # mix_path = "mix_5"
+    train_loader_m = dataset_loader[0]
+    test_loader_m = dataset_loader[1]
+    for model_name, model in models.items():
+        print("Training using :" , model_name)
+        model_filename = model_name+"_"+dataset_name + ".pt"
+        # model_filename = "my_trained_model.pt"
+        results += "Training using "+model_name + "\n"
+        
+        n_model = model
+        optimizer = optim.Adam(n_model.parameters(), lr=l_rate)
+        n_model.to(device)
 
-          # Evaluation
-          for dataset_name, data_loaders in datasets.items():
-              print("Evaluating: ", dataset_name)
-              results += f"Testing {model_name} on {dataset_name} \n"
-              str_results, csv_scores = evaluate_model(n_model, data_loaders[1])
-              results += str_results
-              csv_res.append(csv_scores)
+        # Training loop
+        for epoch in range(epochs):
+            n_model.train()
+            print(epoch)
+            for batch_idx, data in enumerate(train_loader_m[0]):
+                data, target = data[0].to(device), data[1].to(device)
 
-  # Open the file in write mode ("w") and write the string to it
-  with open("results.txt", "w") as f:
-    f.write(results)
+                optimizer.zero_grad()
 
-  fields = ["Accuracy", "Precision", "Recall", "F1", "C-Accuracy", "C-Precision",
-            "C-Recall", "C-F1", "F-Accuracy", "F-Precision", "F-Recall", "F-F1",
-            "T-Accuracy", "T-Precision", "T-Recall", "T-F1"]
+                output = n_model(data)
 
-  with open('results.csv', 'w') as f:
+                loss = lf(output, target)
+                loss.backward()
+                optimizer.step()
 
-      # using csv.writer method from CSV package
-      write = csv.writer(f)
+                if batch_idx % 57 == 0:
+                    results+=f'Epoch {epoch + 1}/{epochs}, Batch {batch_idx}/{len(train_loader_m[0])}, Loss: {loss.item()}\n'
+                    print(f'Epoch {epoch + 1}/{epochs}, Batch {batch_idx}/{len(train_loader_m[0])}, Loss: {loss.item()}')
 
-      write.writerow(fields)
-      write.writerows(csv_res)
+        print("Evaluating: ", dataset_name)
+        results += f"Testing {model_name} on {dataset_name} \n"
+        str_results, csv_scores = evaluate_model(n_model, test_loader_m)
+        results += str_results
+        csv_res.append(csv_scores)
+        csv1.append(csv_scores)
+        
+        save_model(n_model, save_dir, model_filename)
+
+# Open the file in write mode ("w") and write the string to it
+with open("tlp_results.txt", "w") as f:
+  f.write(results)
+
+fields = ["Accuracy", "Precision", "Recall", "F1", "C-Accuracy", "C-Precision",
+          "C-Recall", "C-F1", "F-Accuracy", "F-Precision", "F-Recall", "F-F1",
+          "T-Accuracy", "T-Precision", "T-Recall", "T-F1"]
+
+with open('tlp_results.csv', 'w') as f:
+
+    # using csv.writer method from CSV package
+    write = csv.writer(f)
+
+    write.writerow(fields)
+    write.writerows(csv_res)
+
+
+with open('cpp_results.csv', 'w') as f:
+
+    # using csv.writer method from CSV package
+    write = csv.writer(f)
+
+    write.writerow(fields)
+    write.writerows(csv1)
+

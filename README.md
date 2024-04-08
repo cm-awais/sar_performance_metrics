@@ -1,6 +1,12 @@
 # Evaluating Deep Learning Architectures for Unbalanced SAR Ship Classification: A Focus on Class-wise Performance
 
-This repository contains the code for training deep learning models for classifying ship types in Synthetic Aperture Radar (SAR) images. The focus is on evaluating performance metrics for unbalanced datasets, where some ship classes may be under-represented compared to others.
+This repository contains the code for training deep learning models for classifying ship types in Synthetic Aperture Radar (SAR) images. The focus is on evaluating performance metrics for unbalanced datasets, where some ship classes may be under-represented compared to others. We use F1-score and Gradcam to understand the class imabalance effect on the performance of deep learning models.
+
+| | | |
+|:-------------------------:|:-------------------------:|:-------------------------:|
+|<img width="1604" alt="screen shot 2017-08-07 at 12 18 15 pm" src="Exp_images/Fusar/Fine_VGG/Tanker_o36.png"> Fusar Tanker Image |<img width="1604" alt="screen shot 2017-08-07 at 12 18 15 pm" src="Exp_images/Fusar/VGG/Tanker_hm36.png"> VGG Gradcam|  <img width="1604" alt="screen shot 2017-08-07 at 12 18 15 pm" src="Exp_images/Fusar/Fine_VGG/Tanker_hm36.png"> FineTuned VGG|
+|<img width="1604" alt="screen shot 2017-08-07 at 12 18 15 pm" src="Exp_images/OpenSARShip/CNN/Cargo_o6.png"> OpenSarship Cargo |  <img width="1604" alt="screen shot 2017-08-07 at 12 18 15 pm" src="Exp_images/OpenSARShip/CNN/Cargo_hm6.png"> CNN Gradcam|<img width="1604" alt="screen shot 2017-08-07 at 12 18 15 pm" src="Exp_images/OpenSARShip/Fine_VGG/Cargo_hm6.png"> Fine tuned VGG Gradcam|
+|<img width="1604" alt="screen shot 2017-08-07 at 12 18 15 pm" src="Exp_images/Mixed_fusar/Fine_VGG/Fishing_o27.png"> Mixed Fishing |  <img width="1604" alt="screen shot 2017-08-07 at 12 18 15 pm" src="Exp_images/Mixed_fusar/ResNet/Fishing_hm27.png"> Resnet Gradcam|<img width="1604" alt="screen shot 2017-08-07 at 12 18 15 pm" src="Exp_images/Mixed_fusar/Fine_VGG/Fishing_hm27.png"> Fine tuned VGG Gradcam|
 
 **Models:**
 
@@ -39,7 +45,7 @@ To replicate the experiments and obtain the results, follow these steps:
      ```
 
 4. **Train and Test Models:**
-   - Run the `test_models.py` script to train the deep learning models on the prepared datasets and evaluate their performance on the test sets. This script will perform the training, testing, and save the results.
+   - Run the `test_models.py` script to train the deep learning models on the prepared datasets and evaluate their performance on the test sets. This script will perform the training, testing, and save the results and models.
 
      ```bash
      python test_models.py
@@ -49,6 +55,13 @@ To replicate the experiments and obtain the results, follow these steps:
    - The script will generate two result files:
      - `results.txt`: This file contains detailed logs of the training process, including loss values, accuracy metrics, and hyperparameter configurations.
      - `results.csv`: This file summarizes the performance of each model on different test sets. It typically contains accuracy scores for each ship class and potentially other relevant metrics.
+
+6. **Grad Cam:**
+   - Run the `grad_cams.py` script to visualize the grad cams of the deep learning models on the test datasets. This script will perform the testing on 10 grad_cams images of each class in each datasets and save the resulted images in folder `Exp_images`.
+
+     ```bash
+     python grad_cams.py
+     ```
 
 
 **Further Exploration:**

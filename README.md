@@ -57,7 +57,7 @@ To replicate the experiments and obtain the results, follow these steps:
      - `results.csv`: This file summarizes the performance of each model on different test sets. It typically contains accuracy scores for each ship class and potentially other relevant metrics.
 
 6. **Grad Cam:**
-   - Run the `grad_cams.py` script to visualize the grad cams of the deep learning models on the test datasets. This script will perform the testing on 10 grad_cams images of each class in each datasets and save the resulted images in folder `Exp_images`.
+   - Run the `grad_cams.py` script to visualize the grad cams of the deep learning models on the test datasets. This script will perform the testing on 15 grad_cams images of each class in each datasets and save the resulted images in folder `Exp_images`.
 
      ```bash
      python grad_cams.py

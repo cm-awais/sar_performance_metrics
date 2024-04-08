@@ -1,4 +1,4 @@
-# Evaluating Deep Learning Architectures for Unbalanced SAR Ship Classification: A Focus on Class-wise Performance
+# Deep Learning for SAR Ship classification: Focus on Unbalanced Datasets and Inter-Dataset Generalization
 
 This repository contains the code for training deep learning models for classifying ship types in Synthetic Aperture Radar (SAR) images. The focus is on evaluating performance metrics for unbalanced datasets, where some ship classes may be under-represented compared to others. We use F1-score and Gradcam to understand the class imabalance effect on the performance of deep learning models.
 

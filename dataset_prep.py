@@ -179,17 +179,15 @@ def main():
   extract_fusar(fusar_archive_path)
   processing_open_sarship(src_folder=opensarship_extract_path, dest_folder=open_sar_path)
 
+  split_folder(fusar_path, split_fusar)  # Splits with default parameters (test_size=0.2, shuffle=True)
+  split_folder(open_sar_path, split_open_sar_path)  # Splits with default parameters (test_size=0.2, shuffle=True) 
+
   for folder in sub_folders:
       # Example usage:
-      folder1 = fusar_path + folder
-      folder2 = open_sar_path +folder
+      folder1 = split_fusar+ "/train" + folder
+      folder2 = split_open_sar_path+ "/train" +folder
       destination_folder = mix_path +folder
       merge_folders(folder1, folder2, destination_folder)
-
-
-  # Example usage
-  split_folder(fusar_path, split_fusar)  # Splits with default parameters (test_size=0.2, shuffle=True)
-  split_folder(open_sar_path, split_open_sar_path)  # Splits with default parameters (test_size=0.2, shuffle=True)
   split_folder(mix_path, split_mix_path)  # Splits with default parameters (test_size=0.2, shuffle=True)
 
 if __name__ == "__main__":

@@ -69,3 +69,13 @@ To replicate the experiments and obtain the results, follow these steps:
 * Experiment with different hyperparameter settings.
 * Try data augmentation techniques to address class imbalance.
 * Implement additional evaluation metrics beyond basic accuracy.
+
+**References**
+
+Due to the text limit in the abstract, we couldn't add references, so we are adding here in the repo:
+* Hou, Xiyue, et al. “FUSAR-Ship: Building a High-Resolution SAR-AIS Matchup Dataset of Gaofen-3 for Ship Detection and Recognition.” Science China Information Sciences, vol. 63, 2020
+* Huang, Lanqing, et al. "OpenSARShip: A dataset dedicated to Sentinel-1 ship interpretation." IEEE Journal of Selected Topics in Applied Earth Observations and Remote Sensing 11.1 (2017): 195-208.
+* Simonyan, Karen, and Andrew Zisserman. "Very deep convolutional networks for large-scale image recognition." arXiv preprint arXiv:1409.1556 (2014).
+* Selvaraju, Ramprasaath R., et al. "Grad-cam: Visual explanations from deep networks via gradient-based localization." Proceedings of the IEEE international conference on computer vision. 2017.
+* He, Kaiming, et al. "Deep residual learning for image recognition." Proceedings of the IEEE conference on computer vision and pattern recognition. 2016.
+* Jacob Gildenblat and contributors. "PyTorch library for CAM methods" [Github Link](https://github.com/jacobgil/pytorch-grad-cam) 2021

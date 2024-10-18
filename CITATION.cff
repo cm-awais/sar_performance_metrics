@@ -1,0 +1,9 @@
+cff-version: 1.2.0
+message: "If you use this code, please cite the following work."
+title: "Perfomrance Metrics SAR Ship Classification"
+authors:
+  - family-names: "Awais"
+    given-names: "Ch Muhammad"
+date-released: "2024-2-07"
+version: "1.0.0"
+url: "https://github.com/cm-awais/sar_performance_metrics"

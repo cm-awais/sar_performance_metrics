@@ -70,6 +70,16 @@ To replicate the experiments and obtain the results, follow these steps:
 * Try data augmentation techniques to address class imbalance.
 * Implement additional evaluation metrics beyond basic accuracy.
 
+**Citation**
+@unknown{unknown,
+author = {Awais, Ch and Marcoreggiannini, and Davidemoroni,},
+year = {2024},
+month = {02},
+pages = {},
+title = {Testing a SAR-based ship classifier with different loss functions},
+doi = {10.13140/RG.2.2.35593.04962}
+}
+
 **References**
 
 Due to the text limit in the abstract, we couldn't add references, so we are adding here in the repo:

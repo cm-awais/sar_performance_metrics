@@ -74,13 +74,24 @@ To replicate the experiments and obtain the results, follow these steps:
 
 ```
 @unknown{unknown,
-author = {Awais, Ch and Marcoreggiannini, and Davidemoroni,},
+author = {Awais, Ch and Reggiannini, Marco and Pa,},
 year = {2024},
-month = {02},
+month = {05},
 pages = {},
-title = {Testing a SAR-based ship classifier with different loss functions},
-doi = {10.13140/RG.2.2.35593.04962}
+title = {Evaluating the Impact of Fine-tuning on Deep Learning Models for SAR Ship Classification},
+doi = {10.13140/RG.2.2.11266.08642}
 }
+
+@INPROCEEDINGS{10701968,
+  author={Awais, C.M. and Reggiannini, M.},
+  booktitle={2024 International Conference on Electromagnetics in Advanced Applications (ICEAA)}, 
+  title={Deep Learning for SAR Ship classification: Focus on Unbalanced Datasets and Inter-Dataset Generalization}, 
+  year={2024},
+  volume={},
+  number={},
+  pages={1-1},
+  keywords={Target recognition;Merging;Object detection;Feature extraction;Classification algorithms;Marine vehicles;Electromagnetics;Synthetic aperture radar;Monitoring;Residual neural networks},
+  doi={10.1109/ICEAA61917.2024.10701968}}
 ```
 
 **References**

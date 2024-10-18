@@ -71,6 +71,8 @@ To replicate the experiments and obtain the results, follow these steps:
 * Implement additional evaluation metrics beyond basic accuracy.
 
 **Citation**
+
+```
 @unknown{unknown,
 author = {Awais, Ch and Marcoreggiannini, and Davidemoroni,},
 year = {2024},
@@ -79,6 +81,7 @@ pages = {},
 title = {Testing a SAR-based ship classifier with different loss functions},
 doi = {10.13140/RG.2.2.35593.04962}
 }
+```
 
 **References**
 
